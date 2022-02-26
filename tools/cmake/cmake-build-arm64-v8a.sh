@@ -77,6 +77,7 @@ cmake -DANDROID_ABI="arm64-v8a" \
       -DMACE_ENABLE_CODE_MODE=${MACE_ENABLE_CODE_MODE}        \
       -DMACE_ENABLE_RPCMEM=ON                                 \
       -DCMAKE_INSTALL_PREFIX=install      \
+      -DCMAKE_EXPORT_COMPILE_COMMANDS=1   \
       ../../..
 # make -j$(nproc) && make install
 make -j8 && make install
