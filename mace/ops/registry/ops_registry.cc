@@ -31,6 +31,7 @@ extern void RegisterConcat(OpRegistry *op_registry);
 extern void RegisterConv2D(OpRegistry *op_registry);
 extern void RegisterCrop(OpRegistry *op_registry);
 extern void RegisterCumsum(OpRegistry *op_registry);
+extern void RegisterCustomAdd(OpRegistry *op_registry);
 extern void RegisterDeconv2D(OpRegistry *op_registry);
 extern void RegisterDepthToSpace(OpRegistry *op_registry);
 extern void RegisterDepthwiseConv2d(OpRegistry *op_registry);
@@ -117,6 +118,7 @@ void RegisterAllOps(OpRegistry *registry) {
   ops::RegisterConv2D(registry);
   ops::RegisterCrop(registry);
   ops::RegisterCumsum(registry);
+  ops::RegisterCustomAdd(registry);
   ops::RegisterDeconv2D(registry);
   ops::RegisterDepthToSpace(registry);
   ops::RegisterDepthwiseConv2d(registry);
