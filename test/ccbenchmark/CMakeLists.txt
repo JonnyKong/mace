@@ -1,7 +1,7 @@
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 
 if(NOT APPLE)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp -static-openmp")
 endif()
 
 file(GLOB MACE_BENCHMARK_TEST_SRCS
