@@ -18,7 +18,9 @@ class CustomAddOp;
 template <class T>
 class CustomAddOp<RuntimeType::RT_CPU, T> : public Operation {
  public:
-  explicit CustomAddOp(OpConstructContext *context) : Operation(context) {}
+  explicit CustomAddOp(OpConstructContext *context)
+      : Operation(context),
+        repeat_times(Operation::GetOptionalArg<int>("repeat_times", 1)) {}
 
   MaceStatus Run(OpContext *context) override {
     MACE_UNUSED(context);
@@ -27,7 +29,6 @@ class CustomAddOp<RuntimeType::RT_CPU, T> : public Operation {
     const index_t size = output->size();
 
     auto output_data = output->mutable_data<T>();
-    memset(static_cast<void *>(output_data), 0, size * sizeof(T));
 
     auto input_data_0 = inputs_[0]->template data<T>();
     auto input_data_1 = inputs_[1]->template data<T>();
@@ -35,20 +36,25 @@ class CustomAddOp<RuntimeType::RT_CPU, T> : public Operation {
     for (index_t j = 0; j < size; ++j) {
       output_data[j] = input_data_0[j];
 
-      for (int k = 0; k < 64; k++)
+      for (int k = 0; k < repeat_times; k++) {
         output_data[j] += input_data_1[j];
+      }
     }
 
     return MaceStatus::MACE_SUCCESS;
   }
+
+ private:
+  int repeat_times;
 };
 
 #ifdef MACE_ENABLE_OPENCL
-template<>
+template <>
 class CustomAddOp<RuntimeType::RT_OPENCL, float> : public Operation {
  public:
   explicit CustomAddOp(OpConstructContext *context)
-      : Operation(context) {
+      : Operation(context),
+        repeat_times(Operation::GetOptionalArg<int>("repeat_times", 1)) {
     if (context->GetOpMemoryType() == MemoryType::GPU_IMAGE) {
       kernel_ = make_unique<opencl::image::CustomAddKernel>();
     } else {
@@ -61,21 +67,24 @@ class CustomAddOp<RuntimeType::RT_OPENCL, float> : public Operation {
     for (size_t i = 1; i < n; ++i) {
       MACE_CHECK(inputs_[0]->dim_size() == inputs_[i]->dim_size());
       MACE_CHECK(inputs_[0]->size() == inputs_[i]->size())
-        << "Input 0: " << MakeString(inputs_[0]->shape())
-        << ", size: " << inputs_[0]->size() << ". Input " << i << ": "
-        << MakeString(inputs_[i]->shape()) << ", size: " << inputs_[i]->size();
+          << "Input 0: " << MakeString(inputs_[0]->shape())
+          << ", size: " << inputs_[0]->size() << ". Input " << i << ": "
+          << MakeString(inputs_[i]->shape())
+          << ", size: " << inputs_[i]->size();
     }
 
-    return kernel_->Compute(context, inputs_, output_tensor);
+    return kernel_->Compute(context, inputs_, repeat_times, output_tensor);
   }
 
  private:
   std::unique_ptr<OpenCLCustomAddKernel> kernel_;
+  int repeat_times;
 };
 #endif  // MACE_ENABLE_OPENCL
 
 void RegisterCustomAdd(OpRegistry *op_registry) {
-  MACE_REGISTER_OP(op_registry, "CustomAdd", CustomAddOp, RuntimeType::RT_CPU, float);
+  MACE_REGISTER_OP(op_registry, "CustomAdd", CustomAddOp, RuntimeType::RT_CPU,
+                   float);
   MACE_REGISTER_GPU_OP(op_registry, "CustomAdd", CustomAddOp);
 }
 

@@ -10,6 +10,7 @@ namespace image {
 
 MaceStatus CustomAddKernel::Compute(OpContext *context,
                                const std::vector<const Tensor *> &input_tensors,
+                               int repeat_times,
                                Tensor *output_tensor) {
   size_t size = input_tensors.size();
   MACE_CHECK(size == 2 && input_tensors[0] != nullptr);
@@ -63,6 +64,7 @@ MaceStatus CustomAddKernel::Compute(OpContext *context,
     for (auto input : input_tensors) {
       kernel_.setArg(idx++, *(input->memory<cl::Image>()));
     }
+    kernel_.setArg(idx++, repeat_times);
     kernel_.setArg(idx++, *(output_tensor->mutable_memory<cl::Image>()));
 
     input_shape_ = input_tensors[0]->shape();

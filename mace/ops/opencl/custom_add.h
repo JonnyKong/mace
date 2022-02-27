@@ -16,6 +16,7 @@ class OpenCLCustomAddKernel {
   virtual MaceStatus Compute(
       OpContext *context,
       const std::vector<const Tensor *> &input_tensors,
+      int repeat_times,
       Tensor *output_tensor) = 0;
   MACE_EMPTY_VIRTUAL_DESTRUCTOR(OpenCLCustomAddKernel);
 };

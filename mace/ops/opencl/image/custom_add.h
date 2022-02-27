@@ -17,6 +17,7 @@ class CustomAddKernel : public OpenCLCustomAddKernel {
  public:
   MaceStatus Compute(OpContext *context,
                      const std::vector<const Tensor *> &input_tensors,
+                     int repeat_times,
                      Tensor *output_tensor) override;
 
  private:
