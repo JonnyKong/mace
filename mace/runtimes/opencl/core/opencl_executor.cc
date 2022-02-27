@@ -812,6 +812,7 @@ bool OpenclExecutor::BuildProgramFromSource(
   MaceStatus status = GetProgramSourceByName(program_name, &kernel_source);
   if (status == MaceStatus::MACE_SUCCESS && !kernel_source.empty()) {
     cl::Program::Sources sources;
+    // LOG(ERROR) << "kernel_source: " << kernel_source;
     sources.push_back(kernel_source);
     *program = cl::Program(context(), sources);
     cl_int ret = program->build({device()}, build_options_str.c_str());

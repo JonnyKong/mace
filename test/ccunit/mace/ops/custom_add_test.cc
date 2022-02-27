@@ -30,7 +30,8 @@ void SimpleCustomAdd() {
 }
 }  // namespace
 
-TEST_F(CustomAddOpTest, SimpleCustomAdd) { SimpleCustomAdd<RuntimeType::RT_CPU>(); }
+TEST_F(CustomAddOpTest, CPUSimpleCustomAdd) { SimpleCustomAdd<RuntimeType::RT_CPU>(); }
+TEST_F(CustomAddOpTest, GPUSimpleCustomAdd) { SimpleCustomAdd<RuntimeType::RT_OPENCL>(); }
 
 }  // namespace test
 }  // namespace ops
