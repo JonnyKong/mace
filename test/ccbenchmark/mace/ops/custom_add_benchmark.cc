@@ -33,12 +33,19 @@ void CustomAddBenchmark(
     // expected->Copy(*net.GetOutput("Output"));
   }
 
+  RunMetadata run_metadata;
+
   mace::testing::StartTiming();
   while (iters--) {
-    net.Run();
+    net.Run(&run_metadata);
     net.Sync();
     // auto expected = net.CreateTensor<float>();
     // expected->Copy(*net.GetOutput("Output"));
+  }
+
+  std::cout << "stat length: " << run_metadata.op_stats.size() << std::endl;
+  for (OperatorStats s : run_metadata.op_stats) {
+    std::cout << "Runtime: " << s.stats.end_micros - s.stats.start_micros << std::endl;
   }
 }
 }  // namespace
@@ -64,12 +71,14 @@ void CustomAddBenchmark(
   MACE_BM_CUSTOM_ADD_MACRO(N, H, W, C, REPEAT_TIMES, float, RT_CPU);
 #endif
 
-MACE_BM_CUSTOM_ADD(1, 256, 256, 4, 8);
-MACE_BM_CUSTOM_ADD(1, 256, 256, 4, 64);
-MACE_BM_CUSTOM_ADD(1, 256, 256, 4, 256);
-MACE_BM_CUSTOM_ADD(1, 256, 256, 4, 1024);
-MACE_BM_CUSTOM_ADD(1, 256, 256, 4, 4096);
-MACE_BM_CUSTOM_ADD(1, 256, 256, 4, 16384);
+// MACE_BM_CUSTOM_ADD(1, 2048, 2048, 4, 8);
+// MACE_BM_CUSTOM_ADD(1, 2048, 2048, 4, 64);
+// MACE_BM_CUSTOM_ADD(1, 2048, 2048, 4, 256);
+// MACE_BM_CUSTOM_ADD(1, 2048, 2048, 4, 1024);
+// MACE_BM_CUSTOM_ADD(1, 2048, 2048, 4, 4096);
+MACE_BM_CUSTOM_ADD(1, 1024, 1024, 4, 16384);
+// MACE_BM_CUSTOM_ADD(1, 1024, 1024, 4, 262114);
+// MACE_BM_CUSTOM_ADD(1, 2048, 2048, 4, 2097152);
 
 }  // namespace test
 }  // namespace ops

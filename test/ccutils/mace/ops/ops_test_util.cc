@@ -287,9 +287,9 @@ bool OpsTestNet::Setup(mace::RuntimeType runtime_type) {
   return status == MaceStatus::MACE_SUCCESS;
 }
 
-MaceStatus OpsTestNet::Run() {
+MaceStatus OpsTestNet::Run(RunMetadata *run_metadata) {
   MACE_CHECK_NOTNULL(net_);
-  MACE_RETURN_IF_ERROR(net_->Run());
+  MACE_RETURN_IF_ERROR(net_->Run(run_metadata));
   Sync();
   return MaceStatus::MACE_SUCCESS;
 }
