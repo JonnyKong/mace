@@ -41,7 +41,8 @@ def execute(cmd, verbose=True):
         # pipe is filled and the child process is blocked.
         out, err = p.communicate()
         if p.returncode != 0:
-            raise Exception("errorcode: {}".format(p.returncode))
+            pass
+            #raise Exception("errorcode: {}".format(p.returncode))
         return out
 
     buf = []
@@ -61,7 +62,7 @@ def execute(cmd, verbose=True):
     if p.returncode != 0:
         if verbose:
             print(line)
-        raise Exception("errorcode: %s" % p.returncode)
+        #raise Exception("errorcode: %s" % p.returncode)
 
     return "\n".join(buf)
 

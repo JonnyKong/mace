@@ -56,7 +56,7 @@ def sanitize_load(s):
 
     # sub ${} to env value
     s = re.sub(r"\${(\w+)}", lambda x: os.environ[x.group(1)], s)
-    return yaml.load(s)
+    return yaml.safe_load(s)
 
 
 def parse(path):

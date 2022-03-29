@@ -177,6 +177,8 @@ enum APUPreferenceHint{
 struct CallStats {
   int64_t start_micros;
   int64_t end_micros;
+  int64_t queue_micros;
+  int64_t submit_micros;
 };
 
 struct ConvPoolArgs {

@@ -16,10 +16,11 @@ __kernel void custom_add(OUT_OF_RANGE_PARAMS
   DATA_TYPE4 in0 = READ_IMAGET(input0, SAMPLER, (int2)(w, hb));
   DATA_TYPE4 in1 = READ_IMAGET(input1, SAMPLER, (int2)(w, hb));
   DATA_TYPE4 out = in0;
-
   for (int i = 0; i < repeat_times; i++) {
-    out = out + in1;
+    out =  out + in1;
   }
 
   WRITE_IMAGET(output, (int2)(w, hb), out);
 }
+
+

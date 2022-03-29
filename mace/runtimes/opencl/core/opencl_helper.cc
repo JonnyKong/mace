@@ -225,8 +225,11 @@ MaceStatus TuningOrRun3DKernel(OpenclExecutor *executor,
         internal_gws[i] = RoundUp(gws[i], params[i]);
       }
     }
+   // std::cout << "CL Runtime 3D:\n";
 
     if (timer == nullptr) {
+         // std::cout << " Timer is nullptr\n";
+
       uint32_t block_size = params[3] == 0 ? internal_gws[2] : params[3];
       const uint32_t num_blocks =
           RoundUpDiv<uint32_t>(internal_gws[2], block_size);
@@ -242,8 +245,16 @@ MaceStatus TuningOrRun3DKernel(OpenclExecutor *executor,
             cl::NDRange(params[0], params[1], params[2]), nullptr, &event);
         MACE_CL_RET_ERROR(error);
         WaitForQueueExecution(executor, event);
+        CallStats stats; 
+        executor->GetCallStats(event, &stats);
+        //std::cout << "CL Runtime 3D: " << stats.end_micros << "  " << stats.start_micros << std::endl;
+      
       }
+
+
     } else {
+                std::cout << " Timer is not nullptr\n";
+
       timer->ClearTiming();
       error = executor->command_queue().enqueueNDRangeKernel(
           kernel, cl::NullRange,
@@ -286,6 +297,7 @@ MaceStatus TuningOrRun3DKernel(OpenclExecutor *executor,
   cl_int err = executor->tuner()->template TuneOrRun<cl_int>(
       tuning_key, lws, params_generator, func, &timer);
   MACE_CL_RET_STATUS(err);
+
 
   if (future != nullptr) {
     future->wait_fn = [executor, event](CallStats *stats) {
@@ -399,6 +411,11 @@ MaceStatus TuningOrRun2DKernel(OpenclExecutor *executor,
   cl_int err = executor->tuner()->template TuneOrRun<cl_int>(
       tuning_key, lws, params_generator, func, &timer);
   MACE_CL_RET_STATUS(err);
+
+  CallStats stats; 
+  executor->GetCallStats(event, &stats);
+  //std::cout << "CL Runtime 2D: " << stats.end_micros << "  " << stats.start_micros << std::endl;
+
 
   if (future != nullptr) {
     future->wait_fn = [executor, event](CallStats *stats) {

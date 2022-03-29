@@ -71,6 +71,8 @@ MaceStatus CustomAddKernel::Compute(OpContext *context,
   }
 
   const std::vector<uint32_t> lws = {kwg_size_ / 16, 16, 0};
+
+
   std::string tuning_key = Concat("custom_add_opencl_kernel",
                                   output_tensor->dim(0), output_tensor->dim(1),
                                   output_tensor->dim(2), output_tensor->dim(3));

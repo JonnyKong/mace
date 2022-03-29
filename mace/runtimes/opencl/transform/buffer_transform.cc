@@ -225,6 +225,12 @@ MaceStatus TransformArgument(
     }
     MACE_CL_RET_STATUS(error);
   }
+  
+  event.wait();
+  CallStats stats; 
+  executor->GetCallStats(event, &stats);
+  std::cout << "CL Runtime 3D: " << stats.end_micros << "  " << stats.start_micros << std::endl;
+
   MACE_OUT_OF_RANGE_VALIDATION;
   if (context->future() != nullptr) {
     context->future()->wait_fn = [executor, event](CallStats *stats) {

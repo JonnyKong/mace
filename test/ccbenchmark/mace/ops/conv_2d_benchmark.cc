@@ -65,7 +65,7 @@ void Conv2d(int iters,
       .Finalize(net.NewOperatorDef());
 
   net.Setup(D);
-
+   RunMetadata run_metadata;
   // Warm-up
   for (int i = 0; i < 2; ++i) {
     net.Run();
@@ -74,9 +74,15 @@ void Conv2d(int iters,
 
   mace::testing::StartTiming();
   while (iters--) {
-    net.Run();
+    net.Run(&run_metadata);
     net.Sync();
   }
+ /*std::cout << "stat length: " << run_metadata.op_stats.size() << std::endl;
+  for (OperatorStats s : run_metadata.op_stats) {
+    std::cout << "Runtime: " << s.stats.end_micros - s.stats.start_micros << std::endl;
+  }*/
+
+
 }
 
 #ifdef MACE_ENABLE_QUANTIZE

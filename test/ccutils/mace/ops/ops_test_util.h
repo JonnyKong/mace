@@ -446,8 +446,8 @@ class OpsTestNet {
 
   bool Setup(RuntimeType runtime);
 
-  MaceStatus Run();
-
+  //MaceStatus Run();
+  MaceStatus Run(RunMetadata *run_metadata=nullptr);
   // DEPRECATED(liyin):
   // Test and benchmark should setup model once and run multiple times.
   // Setup time should not be counted during benchmark.

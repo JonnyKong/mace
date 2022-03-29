@@ -94,3 +94,9 @@ their help.
 
 ## Join Us
 [We are hiring](JOBS.md).
+
+
+
+
+python tools/python/run_target.py --target_abi=arm64-v8a --target_socs=all --target_name=mace_cc_benchmark     --filter=".*CUSTOM_ADD.*"
+

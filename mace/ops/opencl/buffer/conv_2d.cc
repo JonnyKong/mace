@@ -38,7 +38,7 @@ bool Conv2dKernel::CheckUseWinograd(
 MaceStatus Conv2dKernel::Compute(
     OpContext *context,
     const Tensor *input,
-    const Tensor *filter,
+    const Tensor *filter, 
     const Tensor *bias,
     const int *strides,
     const Padding &padding_type,

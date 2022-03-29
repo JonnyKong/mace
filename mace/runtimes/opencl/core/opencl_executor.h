@@ -180,6 +180,8 @@ class OpenCLProfilingTimer : public Timer {
   const cl::Event *event_;
   double start_nanos_;
   double stop_nanos_;
+  double submit_nanos_;
+  double  queue_nanos_;
   double accumulated_micros_;
 };
 }  // namespace mace
