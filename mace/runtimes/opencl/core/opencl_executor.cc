@@ -297,6 +297,8 @@ void OpenCLProfilingTimer::StopTiming() {
   runtime_->command_queue().finish();
   start_nanos_ = event_->getProfilingInfo<CL_PROFILING_COMMAND_START>();
   stop_nanos_ = event_->getProfilingInfo<CL_PROFILING_COMMAND_END>();
+  queue_nanos_ =  event_->getProfilingInfo<CL_PROFILING_COMMAND_QUEUED>(); 
+  submit_nanos_ =  event_->getProfilingInfo<CL_PROFILING_COMMAND_SUBMIT>();
 }
 
 double OpenCLProfilingTimer::ElapsedMicros() {
@@ -313,6 +315,8 @@ void OpenCLProfilingTimer::AccumulateTiming() {
 void OpenCLProfilingTimer::ClearTiming() {
   start_nanos_ = 0;
   stop_nanos_ = 0;
+  queue_nanos_ = 0;
+  submit_nanos_ = 0;
   accumulated_micros_ = 0;
 }
 
@@ -445,13 +449,15 @@ MaceStatus OpenclExecutor::Init(std::shared_ptr<OpenclContext> opencl_context,
 
   cl_command_queue_properties properties = 0;
 
-  const char *profiling = getenv("MACE_OPENCL_PROFILING");
+  // const char *profiling = getenv("MACE_OPENCL_PROFILING");
   auto tuner = opencl_context_->opencl_tuner();
-  if (tuner->IsTuning() ||
-      (profiling != nullptr && strlen(profiling) == 1 && profiling[0] == '1')) {
+  // if (tuner->IsTuning() ||
+  //     (profiling != nullptr && strlen(profiling) == 1 && profiling[0] == '1')) {
     properties |= CL_QUEUE_PROFILING_ENABLE;
+    properties |= CL_QUEUE_ON_DEVICE;
+    properties |= CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
     is_profiling_enabled_ = true;
-  }
+  // }
 
   cl_int err;
   if (gpu_type_ == GPUType::QUALCOMM_ADRENO
@@ -939,6 +945,10 @@ void OpenclExecutor::GetCallStats(const cl::Event &event, CallStats *stats) {
         event.getProfilingInfo<CL_PROFILING_COMMAND_START>() / 1000;
     stats->end_micros =
         event.getProfilingInfo<CL_PROFILING_COMMAND_END>() / 1000;
+    stats->submit_micros = 
+        event.getProfilingInfo<CL_PROFILING_COMMAND_SUBMIT>() / 1000;
+    stats->queue_micros = 
+        event.getProfilingInfo<CL_PROFILING_COMMAND_QUEUED>() / 1000;
   }
 }
 

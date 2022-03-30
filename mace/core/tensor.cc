@@ -169,8 +169,8 @@ MaceStatus Tensor::Resize(const std::vector<index_t> &shape) {
 
   shape_ = shape;
   if (need_new) {
-    LOG(WARNING) << "Tensor::Resize, allocate private mem, name: " << name()
-                 << ", new shape: " << MakeString(shape);
+    // LOG(WARNING) << "Tensor::Resize, allocate private mem, name: " << name()
+    //              << ", new shape: " << MakeString(shape);
     ret = runtime_->AllocateBufferForTensor(this, RENT_PRIVATE);
   } else {
     auto buf_shape = runtime_->ComputeBufDimFromTensorDim(

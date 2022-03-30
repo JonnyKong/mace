@@ -112,9 +112,13 @@ class Tuner {
       if (param_table_.find(obfuscated_param_key) != param_table_.end()) {
         VLOG(3) << param_key << ": "
                 << MakeString(param_table_[obfuscated_param_key]);
-        return func(param_table_[obfuscated_param_key], nullptr, nullptr);
+        // return func(param_table_[obfuscated_param_key], nullptr, nullptr);
+        std::vector<param_type> tuning_result;
+        return func(param_table_[obfuscated_param_key], timer, &tuning_result);
       } else {
-        return func(default_param, nullptr, nullptr);
+        // return func(default_param, nullptr, nullptr);
+        std::vector<param_type> tuning_result;
+        return func(default_param, timer, &tuning_result);
       }
     }
   }

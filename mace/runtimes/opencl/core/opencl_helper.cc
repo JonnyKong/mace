@@ -242,6 +242,8 @@ MaceStatus TuningOrRun3DKernel(OpenclExecutor *executor,
             cl::NDRange(params[0], params[1], params[2]), nullptr, &event);
         MACE_CL_RET_ERROR(error);
         WaitForQueueExecution(executor, event);
+        CallStats stats; 
+        executor->GetCallStats(event, &stats);
       }
     } else {
       timer->ClearTiming();

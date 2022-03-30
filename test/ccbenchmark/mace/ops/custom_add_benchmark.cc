@@ -45,7 +45,11 @@ void CustomAddBenchmark(
 
   std::cout << "stat length: " << run_metadata.op_stats.size() << std::endl;
   for (OperatorStats s : run_metadata.op_stats) {
-    std::cout << "Runtime: " << s.stats.end_micros - s.stats.start_micros << std::endl;
+    std::cout << " Queue time: " << s.stats.queue_micros;
+    std::cout << " submit time: " << s.stats.submit_micros;
+    std::cout << " start time: " << s.stats.start_micros;
+    std::cout << " end time: " << s.stats.end_micros;
+    std::cout << " Runtime: " << s.stats.end_micros - s.stats.start_micros << std::endl;
   }
 }
 }  // namespace
@@ -74,9 +78,9 @@ void CustomAddBenchmark(
 // MACE_BM_CUSTOM_ADD(1, 2048, 2048, 4, 8);
 // MACE_BM_CUSTOM_ADD(1, 2048, 2048, 4, 64);
 // MACE_BM_CUSTOM_ADD(1, 2048, 2048, 4, 256);
-// MACE_BM_CUSTOM_ADD(1, 2048, 2048, 4, 1024);
+MACE_BM_CUSTOM_ADD(1, 2048, 2048, 4, 256);
 // MACE_BM_CUSTOM_ADD(1, 2048, 2048, 4, 4096);
-MACE_BM_CUSTOM_ADD(1, 1024, 1024, 4, 16384);
+// MACE_BM_CUSTOM_ADD(1, 1024, 1024, 4, 16384);
 // MACE_BM_CUSTOM_ADD(1, 1024, 1024, 4, 262114);
 // MACE_BM_CUSTOM_ADD(1, 2048, 2048, 4, 2097152);
 
