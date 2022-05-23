@@ -60,11 +60,22 @@ void FCBenchmark(
   }
   net.Sync();
 
+  RunMetadata run_metadata;
+
   mace::testing::StartTiming();
   while (iters--) {
-    net.Run();
+    net.Run(&run_metadata);
   }
   net.Sync();
+
+  std::cout << "stat length: " << run_metadata.op_stats.size() << std::endl;
+  for (OperatorStats s : run_metadata.op_stats) {
+    std::cout << " Queue time: " << s.stats.queue_micros;
+    std::cout << " submit time: " << s.stats.submit_micros;
+    std::cout << " start time: " << s.stats.start_micros;
+    std::cout << " end time: " << s.stats.end_micros;
+    std::cout << " Runtime: " << s.stats.end_micros - s.stats.start_micros << std::endl;
+  }
 }
 
 #ifdef MACE_ENABLE_QUANTIZE
@@ -132,8 +143,7 @@ void FCBenchmark<RT_CPU, uint8_t>(
 #elif defined(MACE_ENABLE_OPENCL)
 #define MACE_BM_FC(N, H, W, C, OC)                 \
   MACE_BM_FC_MACRO(N, H, W, C, OC, float, RT_CPU);    \
-  MACE_BM_FC_MACRO(N, H, W, C, OC, float, RT_OPENCL);    \
-  MACE_BM_FC_MACRO(N, H, W, C, OC, half, RT_OPENCL)
+  MACE_BM_FC_MACRO(N, H, W, C, OC, float, RT_OPENCL)
 #elif defined(MACE_ENABLE_QUANTIZE)
 #define MACE_BM_FC(N, H, W, C, OC)                 \
   MACE_BM_FC_MACRO(N, H, W, C, OC, float, RT_CPU);    \
@@ -143,10 +153,12 @@ void FCBenchmark<RT_CPU, uint8_t>(
   MACE_BM_FC_MACRO(N, H, W, C, OC, float, RT_CPU)
 #endif
 
-MACE_BM_FC(1, 16, 16, 32, 32);
-MACE_BM_FC(1, 8, 8, 32, 1000);
-MACE_BM_FC(1, 2, 2, 512, 2);
-MACE_BM_FC(1, 7, 7, 512, 2048);
+MACE_BM_FC(16, 1, 2048, 1, 2048);
+
+/* MACE_BM_FC(1, 16, 16, 32, 32); */
+/* MACE_BM_FC(1, 8, 8, 32, 1000); */
+/* MACE_BM_FC(1, 2, 2, 512, 2); */
+/* MACE_BM_FC(1, 7, 7, 512, 2048); */
 
 }  // namespace test
 }  // namespace ops

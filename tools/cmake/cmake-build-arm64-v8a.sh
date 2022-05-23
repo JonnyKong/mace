@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 set -e
 
@@ -34,7 +34,7 @@ elif [[ "$RUNTIME" == "HTP" ]]; then
 elif [[ "$RUNTIME" == "APU" ]]; then
     MACE_ENABLE_MTK_APU=ON
     set +e
-    python tools/python/apu_utils.py get-version --target_abi=arm64-v8a
+    python3 tools/python/apu_utils.py get-version --target_abi=arm64-v8a
     MACE_MTK_APU_VERSION=`echo $?`
     echo "The apu version is ${MACE_MTK_APU_VERSION}"
     set -e
@@ -85,5 +85,5 @@ cd ../../..
 
 # Detect the plugin-device and copy the valid so to the output dir
 if [[ "$RUNTIME" == "APU" ]]; then
-    python tools/python/apu_utils.py copy-so-files --target_abi arm64-v8a --apu_path $LIB_DIR
+    python3 tools/python/apu_utils.py copy-so-files --target_abi arm64-v8a --apu_path $LIB_DIR
 fi
